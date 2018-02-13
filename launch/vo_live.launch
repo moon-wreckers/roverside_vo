@@ -1,0 +1,29 @@
+<launch>
+  <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen">
+    <param name="video_device" value="/dev/video0" />
+    <param name="image_width" value="1024" />
+    <param name="image_height" value="760" />
+    <param name="framerate" value="32" />
+    <param name="pixel_format" value="yuyv" />
+    <param name="camera_frame_id" value="usb_cam" />
+    <param name="io_method" value="mmap"/>
+    <param name="contrast" value="22"/>
+    <param name="sharpness" value="22"/>
+    <param name="brightness" value="22"/>
+    <param name="saturation" value="64"/>
+    <param name="gain" value="0"/>
+  </node>
+
+  <node pkg="svo_ros" type="vo" name="svo" clear_params="true" output="screen">
+    <!-- Camera topic to subscribe to -->
+    <param name="cam_topic" value="/usb_cam/image_raw" type="str" />
+    <!-- Camera calibration file -->
+    <rosparam file="$(find roverside_vo)/param/usb_cam_vostro3559.yaml" />
+    <!-- Default parameter settings: choose between vo_fast and vo_accurate -->
+    <rosparam file="$(find svo_ros)/param/vo_fast.yaml" />
+  </node>
+
+  <node name="rviz" pkg="rviz" type="rviz"
+        args="-d $(find roverside_vo)/param/rviz_config.rviz">
+  </node>
+</launch>
